@@ -29,7 +29,11 @@ export default {
                 this.$router.push({ name: "contactbook" });
             }
             catch (error) {
-                console.log(error)
+                //console.log(error)
+                if (error.response?.status === 401) {
+    alert("Bạn cần đăng nhập");
+    window.location.href = "http://localhost:3000/auth/google";
+  }
             }
         }
     },

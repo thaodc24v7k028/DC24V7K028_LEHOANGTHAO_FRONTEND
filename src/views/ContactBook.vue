@@ -15,10 +15,10 @@
                 <button class="btn btn-sm btn-primary" @click="refreshList()">
                     <i class="fas fa-redo"></i> Làm mới
                 </button>
-                <button class="btn btn-sm btn-success" @click="goToAddContact">
+                <button v-if="user" class="btn btn-sm btn-success" @click="goToAddContact">
                     <i class="fas fa-plus"></i> Thêm mới
                 </button>
-                <button class="btn btn-sm btn-danger" @click="removeAllContacts">
+                <button v-if="user" class="btn btn-sm btn-danger" @click="removeAllContacts">
                     <i class="fas fa-trash"></i> Xóa tất cả
                 </button>
             </div>
@@ -34,7 +34,7 @@
                     name: 'contact.edit',
                     params: { id: activeContact._id },
                 }">
-                    <span class="mt-2 badge badge-warning">
+                    <span v-if="user" class="mt-2 badge badge-warning">
                         <i class="fas fa-edit"></i> Hiệu chỉnh</span>
                 </router-link>
             </div>
@@ -58,6 +58,7 @@ export default {
             contacts: [],
             activeIndex: -1,
             searchText: "",
+            user: null,
         };
     },
     watch: {
@@ -113,9 +114,22 @@ export default {
         goToAddContact() {
             this.$router.push({ name: "contact.add" });
         },
+        async getUser() {
+            try {
+                const res = await fetch("http://localhost:3000/auth/user", {
+                    credentials: "include",
+                });
+
+                const data = await res.json();
+                this.user = data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
     mounted() {
         this.refreshList();
+        this.getUser();
     },
 };
 </script>
